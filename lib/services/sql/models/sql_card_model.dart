@@ -4,7 +4,7 @@ SqlCardModel sqlCardModelFromJson(String str) => SqlCardModel.fromJson(json.deco
 String sqlCardModelToJson(SqlCardModel data) => json.encode(data.toJson());
 class SqlCardModel {
   SqlCardModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.number,
     required this.balance,
@@ -14,7 +14,7 @@ class SqlCardModel {
     });
 
   factory SqlCardModel.fromJson(Map<String, dynamic> json) => SqlCardModel(
-    id : json['id'],
+    id : json['id'] ?? 0,
     name : json['card_name'],
     number : json['card_number'],
     expiration : json['card_expiration'],
@@ -23,7 +23,7 @@ class SqlCardModel {
     type : json['card_type'],
   );
 
-  int id;
+  int? id;
   String name;
   String number;
   String balance;

@@ -29,6 +29,13 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>App needs access to photo lib for card background images</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>To capture card background image please grant camera access</string>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
