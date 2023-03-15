@@ -9,7 +9,7 @@ class SqlCardModel {
     required this.number,
     required this.balance,
     required this.expiration,
-    required this.image,
+    this.image, this.fileImage,
     required this.type,
     });
 
@@ -21,6 +21,7 @@ class SqlCardModel {
     balance : json['card_balance'],
     image : json['card_image'],
     type : json['card_type'],
+    fileImage : json['file_image'],
   );
 
   int? id;
@@ -28,7 +29,8 @@ class SqlCardModel {
   String number;
   String balance;
   String expiration;
-  String image;
+  String? image;
+  String? fileImage;
   String type;
 
   Map<String, dynamic> toJson() {
@@ -40,6 +42,7 @@ class SqlCardModel {
     map['card_balance'] = balance;
     map['card_image'] = image;
     map['card_type'] = type;
+    map['file_image'] = fileImage;
     return map;
   }
 

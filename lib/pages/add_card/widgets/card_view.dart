@@ -10,7 +10,8 @@ class CardView extends StatelessWidget {
   final String expiration;
   final String number;
   final String type;
-  CardView({Key? key, this.image, this.file, required this.name, required this.expiration, required this.number, required this.type}) : super(key: key);
+  final Color? color;
+  CardView({Key? key, this.image, this.file, required this.name, required this.expiration, required this.number, required this.type, this.color}) : super(key: key);
 
   final Map<String, String> cards = {
     'uzcard' : 'assets/icons/uzcard_icon.png',
@@ -25,21 +26,26 @@ class CardView extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       height: 140,
-      color: Colors.transparent,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: color ?? Colors.transparent),
       child: Stack(
-        fit: StackFit.expand,
+        fit: StackFit.loose,
         children: [
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.5,
-              child: file == null ? Image.asset(image!, fit: BoxFit.cover) : Image.file(file!, fit: BoxFit.cover),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Opacity(
+                opacity: 0.5,
+                child: image != null ? Image.asset(image!, fit: BoxFit.cover, height: 140) :
+                file != null ? Image.file(file!, fit: BoxFit.cover, height: 140) : null,
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -69,7 +75,7 @@ class CardView extends StatelessWidget {
                         style: CStyle.cStyle(fontSize: 16, fontWeight: 600, color: Colors.white)),
                     Text(expiration.isNotEmpty ? expiration : '00/00', style: CStyle.cStyle(fontSize: 14, fontWeight: 600, color: Colors.white)),
                   ],
-                )
+                ),
 
               ],
             ),

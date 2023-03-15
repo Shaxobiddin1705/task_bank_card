@@ -19,7 +19,7 @@ class AddCardBloc extends Bloc<AddCardEvent, AddCardState> {
   Future<void> _saveCard(SaveCardEvent event, Emitter<AddCardState> emit) async {
     EasyLoading.show(status: 'Loading...');
     final cardModel = SqlCardModel(name: event.cardName, number: event.cardNum, balance: '500 000', expiration: event.expiration,
-        image: event.image, type: event.type);
+        image: event.image, type: event.type, fileImage: event.fileImage);
     final result = await sql.insertCard(cardModel);
     log('This is result ----- $result');
     emit(const SuccessSavedCardState());

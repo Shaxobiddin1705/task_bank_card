@@ -8,10 +8,11 @@ class SaveCardEvent extends AddCardEvent{
   final String cardNum;
   final String expiration;
   final String cardName;
-  final String image;
+  final String? image;
+  final String? fileImage;
   final String type;
-  const SaveCardEvent({required this.cardNum, required this.expiration, required this.image, required this.cardName, required this.type});
+  const SaveCardEvent({required this.cardNum, required this.expiration, this.image, this.fileImage, required this.cardName, required this.type});
 
   @override
-  List<Object?> get props => [cardNum, cardName, expiration, image];
+  List<Object?> get props => [cardNum, cardName, expiration, image, fileImage];
 }

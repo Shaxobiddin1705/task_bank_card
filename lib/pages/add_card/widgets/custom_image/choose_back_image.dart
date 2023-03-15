@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class ChooseBackImage extends StatelessWidget {
-  final int selectedIndex;
+  final int? selectedIndex;
   final int i;
   final String image;
   const ChooseBackImage({Key? key, required this.selectedIndex, required this.image, required this.i}) : super(key: key);
@@ -13,7 +13,7 @@ class ChooseBackImage extends StatelessWidget {
       alignment: AlignmentDirectional.center,
       children: [
         Visibility(
-          visible: selectedIndex == i,
+          visible: selectedIndex != null && selectedIndex == i,
           child: const Icon(Icons.done, size: 30, color: Colors.white),
         ),
         Opacity(

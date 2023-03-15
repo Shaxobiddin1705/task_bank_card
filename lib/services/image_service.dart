@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as im;
@@ -8,8 +9,8 @@ import 'package:task_bank_card/consts/colors.dart';
 import 'package:uuid/uuid.dart';
 
 class ImageService{
+
   static Future<String?> compressImage(File imageFile) async {
-    final fileName = ph.basename(imageFile.path);
     var uuid = const Uuid();
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
@@ -36,8 +37,7 @@ class ImageService{
             ? const CropAspectRatio(ratioX: 9, ratioY: 16)
             : null
             : null,
-        aspectRatioPresets: aspectRatioPresets ??
-            [CropAspectRatioPreset.original, CropAspectRatioPreset.ratio16x9],
+        aspectRatioPresets: aspectRatioPresets ?? [CropAspectRatioPreset.original, CropAspectRatioPreset.ratio16x9],
         sourcePath: path,
         uiSettings: [
           AndroidUiSettings(
@@ -52,7 +52,16 @@ class ImageService{
         ],
       );
       if (croppedFile != null) {
-        return croppedFile.path;
+        final directory = await getExternalStorageDirectory();
+        final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final newPath = '${directory?.path}/$fileName';
+        try {
+          final newImage = await File(newPath).copy(newPath);
+          return newImage.path;
+        } catch (e) {
+          log('Error saving image: $e');
+          return null;
+        }
       } else {
         return null;
       }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_bank_card/blocs/my_cards/my_cards_bloc.dart';
@@ -57,52 +59,62 @@ class _MyCardsPageState extends State<MyCardsPage> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 24),
                     child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(state.cards[i].image),
-                              fit: BoxFit.cover, opacity: 0.6
-                          ),
-                          borderRadius: BorderRadius.circular(16)
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                      child: Stack(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(card.name.isNotEmpty ? card.name : 'Undefined',
-                                  style: CStyle.cStyle(fontSize: 14, fontWeight: 500, color: Colors.white)),
-
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
-                                child: Image.asset(cards[card.type] ?? 'assets/icons/uzcard_icon.png', fit: BoxFit.scaleDown, height: 16, width: 24),
-                              )
-                            ],
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Opacity(
+                                opacity: 0.5,
+                                child: state.cards[i].image != null ? Image.asset(state.cards[i].image!, fit: BoxFit.cover) :
+                                Image.file(File(state.cards[i].fileImage!), fit: BoxFit.cover)
+                              ),
+                            ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(card.name.isNotEmpty ? card.name : 'Undefined',
+                                        style: CStyle.cStyle(fontSize: 14, fontWeight: 500, color: Colors.white)),
 
-                          const SizedBox(height: 32),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
+                                      child: Image.asset(cards[card.type] ?? 'assets/icons/uzcard_icon.png', fit: BoxFit.scaleDown, height: 16, width: 24),
+                                    )
+                                  ],
+                                ),
+
+                                const SizedBox(height: 32),
 
 
-                          Text('${card.balance} UZS',
-                              style: CStyle.cStyle(fontSize: 22, fontWeight: 600, color: Colors.white)),
+                                Text('${card.balance} UZS',
+                                    style: CStyle.cStyle(fontSize: 22, fontWeight: 600, color: Colors.white)),
 
-                          const SizedBox(height: 10),
+                                const SizedBox(height: 10),
 
-                          Text(card.number, style: CStyle.cStyle(fontSize: 16, fontWeight: 600, color: Colors.white)),
+                                Text(card.number, style: CStyle.cStyle(fontSize: 16, fontWeight: 600, color: Colors.white)),
 
-                          const SizedBox(height: 8),
+                                const SizedBox(height: 8),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('CARD HOLDER NAME', overflow: TextOverflow.ellipsis,
-                                  style: CStyle.cStyle(fontSize: 16, fontWeight: 600, color: Colors.white)),
-                              Text(card.expiration, style: CStyle.cStyle(fontSize: 14, fontWeight: 600, color: Colors.white)),
-                            ],
-                          )
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('CARD HOLDER NAME', overflow: TextOverflow.ellipsis,
+                                        style: CStyle.cStyle(fontSize: 16, fontWeight: 600, color: Colors.white)),
+                                    Text(card.expiration, style: CStyle.cStyle(fontSize: 14, fontWeight: 600, color: Colors.white)),
+                                  ],
+                                )
 
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

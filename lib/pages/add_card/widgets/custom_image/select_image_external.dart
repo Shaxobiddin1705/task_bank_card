@@ -52,8 +52,10 @@ class _SelectImageFromExternalState extends State<SelectImageFromExternal> {
               InkWell(
                 onTap: () async{
                   final image = await _picker.pickImage(source: ImageSource.gallery);
-                  if(image != null)  {
-                    final result = await ImageService.compressImage(File(image.path));
+                  if(image != null) {
+                    final croppedImage = await ImageService.imageCrop(image.path);
+                    log(croppedImage.toString());
+                    final result = await ImageService.compressImage(File(croppedImage ?? image.path));
                     widget.onChange(result ?? '', File(image.path));
                   }
                   setState(() {});

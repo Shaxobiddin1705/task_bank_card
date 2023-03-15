@@ -9,10 +9,12 @@ import 'package:task_bank_card/consts/colors.dart';
 import 'package:task_bank_card/consts/styles.dart';
 import 'package:task_bank_card/pages/add_card/widgets/card_number_textfield.dart';
 import 'package:task_bank_card/pages/add_card/widgets/card_view.dart';
-import 'package:task_bank_card/pages/add_card/widgets/choose_back_image.dart';
+import 'package:task_bank_card/pages/add_card/widgets/color_picker/color_picker_dialog.dart';
+import 'package:task_bank_card/pages/add_card/widgets/custom_image/choose_back_image.dart';
 import 'package:task_bank_card/pages/add_card/widgets/expiration_formatter.dart';
 import 'package:task_bank_card/pages/add_card/widgets/custom_image/select_image_external.dart';
 import 'package:task_bank_card/pages/my_cards/my_cards_page.dart';
+import 'package:task_bank_card/services/image_service.dart';
 import 'package:task_bank_card/services/routes/routes.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -26,10 +28,11 @@ class _AddCardPageState extends State<AddCardPage> {
   final _formKey = GlobalKey<FormState>();
   List<String> images = ['card_back_image_1.jpg', 'card_back_image_2.jpg', 'card_back_image_3.png'];
   int selectedImageIndex = 0;
-  String selectedImage = '';
+  String? selectedImage;
   String cardNumber = '';
   String cardType = '';
   File? fileImage;
+  Color? selectedColor;
 
   final TextStyle titleStyle = CStyle.cStyle(fontSize: 12, fontWeight: 400, color: const Color(0xFF9CA3AF));
   final TextStyle hintStyle = CStyle.cStyle(fontSize: 16, fontWeight: 400, color: const Color(0xFF9CA3AF));
@@ -56,11 +59,11 @@ class _AddCardPageState extends State<AddCardPage> {
           key: _formKey,
           child: ListView(
             physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.zero, shrinkWrap: true,
             children: [
 
               CardView(
-                expiration: expirationDateController.text.trim(), file: fileImage,
+                expiration: expirationDateController.text.trim(), file: fileImage, color: selectedColor,
                 number: cardNumber, type: cardType, image: selectedImage, name: cardNameController.text.trim(),
               ),
 
@@ -153,9 +156,10 @@ class _AddCardPageState extends State<AddCardPage> {
                       onTap: () {
                         selectedImageIndex = i;
                         selectedImage = 'assets/images/${images[i]}';
+                        fileImage = null;
                         setState(() {});
                       },
-                      child: ChooseBackImage(selectedIndex: selectedImageIndex, i: i, image: images[i]),
+                      child: ChooseBackImage(selectedIndex: selectedImage != null ? selectedImageIndex : null, i: i, image: images[i]),
                     ),
                   ),
                 ),
@@ -164,8 +168,32 @@ class _AddCardPageState extends State<AddCardPage> {
               SelectImageFromExternal(
                 onChange: (String image, File file) {
                   fileImage = file;
+                  selectedImage = null;
                   setState(() {});
                 },
+              ),
+
+              const SizedBox(height: 12),
+
+              Padding(
+                padding: EdgeInsets.only(left: 24, right: MediaQuery.of(context).size.width * 0.6),
+                child: InkWell(
+                  onTap: (){
+                    showDialog(context: context, builder: (context) => ColorPickerDialog(color: selectedColor)).then((value) {
+                      if(value != null) {
+                        selectedColor = value;
+                        fileImage = null;
+                        selectedImage = null;
+                        setState(() {});
+                      }
+                    });
+                  },
+                  child: Container(
+                    width: 120, height: 40, alignment: Alignment.center,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: MyColors.primaryWhite),
+                    child: Text('Select Color', style: CStyle.cStyle(fontSize: 16, fontWeight: 500, color: MyColors.darkBlue))
+                  ),
+                ),
               ),
 
               const SizedBox(height: 36),
@@ -179,11 +207,14 @@ class _AddCardPageState extends State<AddCardPage> {
                       },
                       builder: (context, state) {
                         return MaterialButton(
-                          onPressed: (){
+                          onPressed: () async{
                             FocusManager.instance.primaryFocus?.unfocus();
-                            if(_formKey.currentState!.validate() && cardType != 'danger') {
-                              context.read<AddCardBloc>().add(SaveCardEvent(cardNum: cardNumber, cardName: cardNameController.text.trim(),
-                                  expiration: expirationDateController.text.trim(), image: 'assets/images/${images[selectedImageIndex]}', type: cardType));
+                            if(_formKey.currentState!.validate() && cardType != 'danger'){
+                              final img = fileImage != null ? await ImageService.compressImage(fileImage!) : null;
+                              if(context.mounted) {
+                                context.read<AddCardBloc>().add(SaveCardEvent(cardNum: cardNumber, cardName: cardNameController.text.trim(), fileImage: img,
+                                    expiration: expirationDateController.text.trim(), image: selectedImage, type: cardType));
+                              }
                             }
                           },
                           color: Colors.white,

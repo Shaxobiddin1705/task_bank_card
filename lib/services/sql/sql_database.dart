@@ -16,6 +16,7 @@ class SqlService{
   static const columnCardBalance = 'card_balance';
   static const columnCardImage = 'card_image';
   static const columnCardType = 'card_type';
+  static const columnCardFileImage = 'file_image';
 
 
   SqlService._internal();
@@ -48,6 +49,7 @@ class SqlService{
       $columnCardExpiration TEXT,
       $columnCardBalance TEXT,
       $columnCardImage TEXT,
+      $columnCardFileImage TEXT,
       $columnCardType TEXT)
     ''');
   }
