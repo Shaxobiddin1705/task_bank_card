@@ -7,12 +7,30 @@ abstract class AddCardEvent extends Equatable {
 class SaveCardEvent extends AddCardEvent{
   final String cardNum;
   final String expiration;
-  final String cardName;
   final String? image;
   final String? fileImage;
   final String type;
-  const SaveCardEvent({required this.cardNum, required this.expiration, this.image, this.fileImage, required this.cardName, required this.type});
+  final double? xValue;
+  final double? yValue;
+  const SaveCardEvent({required this.cardNum, required this.expiration, this.image, this.fileImage, required this.type, this.xValue, this.yValue});
 
   @override
-  List<Object?> get props => [cardNum, cardName, expiration, image, fileImage];
+  List<Object?> get props => [cardNum, expiration, image, fileImage];
+}
+
+class ChangeBlurValueEvent extends AddCardEvent{
+  final double xVal;
+  final double yVal;
+  const ChangeBlurValueEvent({required this.xVal, required this.yVal});
+  @override
+  List<Object?> get props => [xVal, yVal];
+}
+
+class ChangeBlurValueState extends AddCardState{
+  final double xVal;
+  final double yVal;
+  const ChangeBlurValueState({required this.xVal, required this.yVal});
+
+  @override
+  List<Object?> get props => [xVal, yVal];
 }

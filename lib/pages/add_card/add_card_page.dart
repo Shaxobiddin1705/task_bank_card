@@ -33,13 +33,14 @@ class _AddCardPageState extends State<AddCardPage> {
   String cardType = '';
   File? fileImage;
   Color? selectedColor;
+  double xValue = 0;
+  double yValue = 0;
 
   final TextStyle titleStyle = CStyle.cStyle(fontSize: 12, fontWeight: 400, color: const Color(0xFF9CA3AF));
   final TextStyle hintStyle = CStyle.cStyle(fontSize: 16, fontWeight: 400, color: const Color(0xFF9CA3AF));
   final TextStyle textFieldStyle = CStyle.cStyle(fontSize: 16, fontWeight: 400, color: Colors.white);
 
   TextEditingController expirationDateController = TextEditingController();
-  TextEditingController cardNameController = TextEditingController();
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _AddCardPageState extends State<AddCardPage> {
 
               CardView(
                 expiration: expirationDateController.text.trim(), file: fileImage, color: selectedColor,
-                number: cardNumber, type: cardType, image: selectedImage, name: cardNameController.text.trim(),
+                number: cardNumber, type: cardType, image: selectedImage,
               ),
 
               const SizedBox(height: 35),
@@ -108,25 +109,6 @@ class _AddCardPageState extends State<AddCardPage> {
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                       hintText: 'MM/YY',
-                      hintStyle: hintStyle,
-                    ),
-                  )
-              ),
-
-              const SizedBox(height: 24),
-
-              _padding(child: Text('Card name', style: titleStyle)),
-
-              const SizedBox(height: 8),
-
-              ///cardName
-              _padding(
-                  child: TextFormField(
-                    controller: cardNameController,
-                    style: textFieldStyle,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                      hintText: 'Card name',
                       hintStyle: hintStyle,
                     ),
                   )
@@ -196,6 +178,51 @@ class _AddCardPageState extends State<AddCardPage> {
                 ),
               ),
 
+              const SizedBox(height: 12),
+
+              BlocBuilder<AddCardBloc, AddCardState>(
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Slider(
+                              value: state is ChangeBlurValueState ? state.xVal : xValue, max: 10,
+                              onChanged: (double value) {
+                                xValue = value;
+                                context.read<AddCardBloc>().add(ChangeBlurValueEvent(xVal: xValue, yVal: yValue));
+                              },
+                            ),
+                          ),
+
+                          Text('X blur : ${state is ChangeBlurValueState ? state.xVal.round() : 0}'),
+                          const SizedBox(width: 24)
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Slider(
+                              value: state is ChangeBlurValueState ? state.yVal : yValue, max: 10,
+                              onChanged: (double value) {
+                                yValue = value;
+                                context.read<AddCardBloc>().add(ChangeBlurValueEvent(xVal: xValue, yVal: yValue));
+                              },
+                            ),
+                          ),
+                          Text('Y blur : ${state is ChangeBlurValueState ? state.yVal.round() : 0}'),
+                          const SizedBox(width: 24)
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              ),
+
               const SizedBox(height: 36),
 
               _padding(
@@ -212,8 +239,8 @@ class _AddCardPageState extends State<AddCardPage> {
                             if(_formKey.currentState!.validate() && cardType != 'danger'){
                               final img = fileImage != null ? await ImageService.compressImage(fileImage!) : null;
                               if(context.mounted) {
-                                context.read<AddCardBloc>().add(SaveCardEvent(cardNum: cardNumber, cardName: cardNameController.text.trim(), fileImage: img,
-                                    expiration: expirationDateController.text.trim(), image: selectedImage, type: cardType));
+                                context.read<AddCardBloc>().add(SaveCardEvent(cardNum: cardNumber, fileImage: img, expiration: expirationDateController.text.trim(),
+                                    image: selectedImage, type: cardType, xValue: xValue, yValue: yValue));
                               }
                             }
                           },

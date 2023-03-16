@@ -10,13 +10,14 @@ class SqlService{
 
   static const cardTable = 'cards_data';
   static const columnCardId = 'id';
-  static const columnCardName = 'card_name';
+  static const columnCardColor = 'card_color';
   static const columnCardNumber = 'card_number';
   static const columnCardExpiration = 'card_expiration';
-  static const columnCardBalance = 'card_balance';
+  static const columnCardBlurX = 'card_blur_x';
+  static const columnCardBlurY = 'card_blur_y';
   static const columnCardImage = 'card_image';
   static const columnCardType = 'card_type';
-  static const columnCardFileImage = 'file_image';
+  static const columnCardFileImage = 'card_file_image';
 
 
   SqlService._internal();
@@ -45,10 +46,11 @@ class SqlService{
     await database.execute('''CREATE TABLE $cardTable(
       $columnCardId INTEGER PRIMARY KEY AUTOINCREMENT, 
       $columnCardNumber TEXT,
-      $columnCardName TEXT,
       $columnCardExpiration TEXT,
-      $columnCardBalance TEXT,
       $columnCardImage TEXT,
+      $columnCardColor TEXT,
+      $columnCardBlurX REAL,
+      $columnCardBlurY REAL,
       $columnCardFileImage TEXT,
       $columnCardType TEXT)
     ''');
@@ -57,7 +59,7 @@ class SqlService{
   Future<List<Map<String, dynamic>>?> getCardsMapList() async {
     final db = await database;
 
-    var result = await db?.query(cardTable, orderBy: '$columnCardName ASC');
+    var result = await db?.query(cardTable, orderBy: '$columnCardId ASC');
     return result;
   }
 

@@ -14,16 +14,23 @@ class AddCardBloc extends Bloc<AddCardEvent, AddCardState> {
     on<SaveCardEvent>((event, emit) async{
       await _saveCard(event, emit);
     });
+    on<ChangeBlurValueEvent>((event, emit){
+      _changeBlur(event, emit);
+    });
   }
 
   Future<void> _saveCard(SaveCardEvent event, Emitter<AddCardState> emit) async {
     EasyLoading.show(status: 'Loading...');
-    final cardModel = SqlCardModel(name: event.cardName, number: event.cardNum, balance: '500 000', expiration: event.expiration,
-        image: event.image, type: event.type, fileImage: event.fileImage);
+    final cardModel = SqlCardModel(number: event.cardNum, expiration: event.expiration,
+        image: event.image, type: event.type, fileImage: event.fileImage, xValue: event.xValue, yValue: event.yValue);
     final result = await sql.insertCard(cardModel);
     log('This is result ----- $result');
     emit(const SuccessSavedCardState());
     EasyLoading.dismiss();
+  }
+
+  void _changeBlur(ChangeBlurValueEvent event, Emitter<AddCardState> emit) {
+    emit(ChangeBlurValueState(xVal: event.xVal, yVal: event.yVal));
   }
 
 }

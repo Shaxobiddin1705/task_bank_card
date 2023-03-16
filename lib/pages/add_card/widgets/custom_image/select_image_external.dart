@@ -27,7 +27,7 @@ class _SelectImageFromExternalState extends State<SelectImageFromExternal> {
         children: [
           const SizedBox(height: 16),
 
-          Text('Select image from external storage', style: CStyle.cStyle(fontSize: 16, color: const Color(0xFF9CA3AF))),
+          Text('Select image from internal storage', style: CStyle.cStyle(fontSize: 16, color: const Color(0xFF9CA3AF))),
 
           const SizedBox(height: 8),
 
@@ -37,7 +37,9 @@ class _SelectImageFromExternalState extends State<SelectImageFromExternal> {
                 onTap: () async{
                   final image = await _picker.pickImage(source: ImageSource.camera);
                   if(image != null)  {
-                    final result = await ImageService.compressImage(File(image.path));
+                    final croppedImage = await ImageService.imageCrop(image.path);
+                    log(croppedImage.toString());
+                    final result = await ImageService.compressImage(File(croppedImage ?? image.path));
                     widget.onChange(result ?? '', File(image.path));
                   }
                   setState(() {});
