@@ -17,6 +17,7 @@ class SqlService{
   static const columnCardBlurY = 'card_blur_y';
   static const columnCardImage = 'card_image';
   static const columnCardType = 'card_type';
+  static const columnFile = 'file';
   static const columnCardFileImage = 'card_file_image';
 
 
@@ -52,6 +53,7 @@ class SqlService{
       $columnCardBlurX REAL,
       $columnCardBlurY REAL,
       $columnCardFileImage TEXT,
+      $columnFile TEXT,
       $columnCardType TEXT)
     ''');
   }

@@ -16,6 +16,7 @@ import 'package:task_bank_card/pages/add_card/widgets/custom_image/select_image_
 import 'package:task_bank_card/pages/my_cards/my_cards_page.dart';
 import 'package:task_bank_card/services/image_service.dart';
 import 'package:task_bank_card/services/routes/routes.dart';
+import 'package:task_bank_card/services/sql/models/sql_card_model.dart';
 
 class AddCardPage extends StatefulWidget {
   const AddCardPage({Key? key}) : super(key: key);
@@ -238,9 +239,11 @@ class _AddCardPageState extends State<AddCardPage> {
                             FocusManager.instance.primaryFocus?.unfocus();
                             if(_formKey.currentState!.validate() && cardType != 'danger'){
                               final img = fileImage != null ? await ImageService.compressImage(fileImage!) : null;
+                              print(ColorClass.colorToString(selectedColor));
+                              print(ColorClass.stringToColor(ColorClass.colorToString(selectedColor)));
                               if(context.mounted) {
                                 context.read<AddCardBloc>().add(SaveCardEvent(cardNum: cardNumber, fileImage: img, expiration: expirationDateController.text.trim(),
-                                    image: selectedImage, type: cardType, xValue: xValue, yValue: yValue));
+                                    image: selectedImage, type: cardType, xValue: xValue, yValue: yValue, file: fileImage, color: selectedColor));
                               }
                             }
                           },

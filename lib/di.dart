@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:task_bank_card/consts/colors.dart';
+import 'package:task_bank_card/services/dio/dio_service.dart';
 import 'package:task_bank_card/services/sql/sql_database.dart';
 
 final GetIt di = GetIt.I;
 var sql = di.get<SqlService>();
+var dio = di.get<DioService>();
 
 Widget home = const Scaffold();
 
@@ -36,4 +38,5 @@ Future _setupConfigs() async {
 
 Future _setupFactories() async {
   di.registerFactory(() => SqlService());
+  di.registerFactory(() => DioService());
 }
